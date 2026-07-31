@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Trailhead — ท่องศัพท์ Oxford 5000</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E1220;
+  --bg-2:#151A2E;
+  --surface:#1B2137;
+  --surface-2:#242C4A;
+  --surface-3:#2E3760;
+  --ink:#F1EEE4;
+  --ink-dim:#9CA3C4;
+  --line:#323B5E;
+  --a1:#4ADE80; --a1-dim:#173324;
+  --a2:#38BDF8; --a2-dim:#122B3A;
+  --b1:#A78BFA; --b1-dim:#241D42;
+  --b2:#FB923C; --b2-dim:#3A2612;
+  --c1:#F43F5E; --c1-dim:#3A1420;
+  --gold:#FBBF24;
+  --good:#4ADE80;
+  --bad:#F43F5E;
+  --radius:18px;
+  --radius-sm:12px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:radial-gradient(circle at 20% 0%, #1a2140 0%, var(--bg) 55%);
+  color:var(--ink);
+  font-family:'IBM Plex Sans Thai','IBM Plex Mono',sans-serif;
+  min-height:100vh;
+  -webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;
+}
+.display{font-family:'Fredoka',sans-serif;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+.bg-blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.20;pointer-events:none;z-index:0;}
+.bg-blob.b1{width:380px;height:380px;background:var(--a2);top:-140px;left:-100px;animation:float1 18s ease-in-out infinite;}
+.bg-blob.b2{width:440px;height:440px;background:var(--b1);bottom:-180px;right:-140px;animation:float2 22s ease-in-out infinite;}
+.bg-blob.b3{width:300px;height:300px;background:var(--a1);top:42%;right:-130px;animation:float1 26s ease-in-out infinite reverse;}
+@keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,40px)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,-30px)}}
+#shell{position:relative;z-index:1;min-height:100vh;display:flex;justify-content:center;}
+#app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;width:100%;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:4px;}
+
+/* ---------- top bar ---------- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;position:sticky;top:0;z-index:20;
+  background:linear-gradient(180deg, var(--bg) 60%, rgba(14,18,32,0));
+  backdrop-filter:blur(6px);
+}
+.brand{display:flex;align-items:center;gap:8px;font-family:'Fredoka';font-weight:600;font-size:18px;}
+.brand .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;font-size:14px;}
+.stat-pill{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--line);padding:5px 10px;border-radius:999px;font-size:13px;font-weight:600;}
+.stat-pill.gold{color:var(--gold);}
+.stat-pill.streak{color:#FB923C;}
+.topbar-right{display:flex;gap:8px;}
+
+.screen{padding:0 18px 100px;flex:1;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ---------- home ---------- */
+.hero{padding:8px 0 18px;}
+.hero h1{font-family:'Fredoka';font-size:26px;margin:0 0 4px;}
+.hero p{color:var(--ink-dim);margin:0;font-size:14px;line-height:1.6;}
+
+.review-cta{
+  margin-top:16px;padding:16px;border-radius:var(--radius);
+  background:linear-gradient(135deg, var(--surface-2), var(--surface));
+  border:1px solid var(--line);display:flex;align-items:center;gap:14px;
+}
+.review-cta .icon{font-size:28px;}
+.review-cta .txt{flex:1;}
+.review-cta .txt b{font-family:'Fredoka';font-size:16px;display:block;}
+.review-cta .txt span{color:var(--ink-dim);font-size:13px;}
+.review-cta .go{background:var(--gold);color:#26200a;font-weight:700;padding:9px 14px;border-radius:999px;font-size:13px;white-space:nowrap;}
+.review-cta.empty{opacity:.55;}
+
+.level-tabs{display:flex;gap:6px;margin-top:22px;overflow-x:auto;padding-bottom:4px;}
+.level-tab{
+  flex:1;text-align:center;padding:10px 6px;border-radius:12px;
+  font-family:'Fredoka';font-weight:600;font-size:13px;
+  border:1.5px solid var(--line);background:var(--surface);color:var(--ink-dim);
+  white-space:nowrap;
+}
+.level-tab.active{color:#0E1220;}
+.level-tab small{display:block;font-family:'IBM Plex Sans Thai';font-weight:500;font-size:10px;margin-top:2px;opacity:.85;}
+.level-tab.locked{opacity:.4;}
+
+.level-progress-bar{height:6px;border-radius:4px;background:var(--surface-2);overflow:hidden;margin:14px 0 2px;}
+.level-progress-bar > div{height:100%;border-radius:4px;}
+.level-progress-label{font-size:12px;color:var(--ink-dim);display:flex;justify-content:space-between;margin-bottom:6px;}
+
+.chapters{margin-top:16px;display:flex;flex-direction:column;gap:10px;}
+.chapter-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+}
+.chapter-card .badge{
+  width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka';font-weight:700;font-size:15px;flex-shrink:0;
+}
+.chapter-card .info{flex:1;}
+.chapter-card .info b{font-family:'Fredoka';font-size:15px;display:block;}
+.chapter-card .info span{color:var(--ink-dim);font-size:12px;}
+.chapter-card .arrow{font-size:18px;color:var(--ink-dim);}
+.chapter-card.locked{opacity:.4;}
+
+/* ---------- stage path ---------- */
+.path-wrap{padding-top:6px;}
+.back-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.back-btn{width:34px;height:34px;border-radius:10px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.back-row b{font-family:'Fredoka';font-size:17px;}
+.path{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0 30px;position:relative;}
+.stage-node{
+  width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka';font-weight:700;font-size:18px;position:relative;
+  border:3px solid var(--line);background:var(--surface);color:var(--ink-dim);
+  margin:4px 0;
+}
+.stage-node:nth-child(odd){margin-left:-46px;}
+.stage-node:nth-child(even){margin-left:46px;}
+.stage-node.done{color:#0E1220;}
+.stage-node.current{transform:scale(1.12);box-shadow:0 0 0 5px rgba(255,255,255,.05);}
+.stage-node.locked{opacity:.35;}
+.stage-node .stars{position:absolute;bottom:-11px;font-size:11px;letter-spacing:1px;}
+.stage-node .check{font-size:22px;}
+
+/* ---------- lesson card ---------- */
+.lesson-header{display:flex;align-items:center;gap:10px;padding-top:4px;margin-bottom:18px;}
+.progress-track{flex:1;height:10px;background:var(--surface-2);border-radius:6px;overflow:hidden;}
+.progress-track > div{height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:6px;transition:width .3s ease;}
+.close-x{font-size:20px;color:var(--ink-dim);width:30px;text-align:center;}
+.hearts{font-size:14px;color:var(--bad);white-space:nowrap;}
+
+.word-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px 22px;text-align:center;
+}
+.type-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;margin-bottom:14px;}
+.word-main{font-family:'IBM Plex Mono';font-weight:700;font-size:34px;margin:0 0 6px;word-break:break-word;}
+.phon{color:var(--ink-dim);font-family:'IBM Plex Mono';font-size:15px;margin-bottom:14px;}
+.audio-row{display:flex;justify-content:center;gap:10px;margin-bottom:18px;}
+.audio-btn{
+  width:50px;height:50px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.audio-btn:active{transform:scale(.94);}
+.definition-box{text-align:left;background:var(--surface-2);border-left:3px solid var(--a2);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 16px;margin-bottom:12px;font-size:14px;line-height:1.6;color:var(--ink);}
+.examples-box{text-align:left;background:var(--bg-2);border-radius:var(--radius-sm);padding:14px 16px;margin-top:6px;}
+.examples-box p{margin:0 0 8px;font-size:13.5px;line-height:1.55;color:var(--ink-dim);}
+.examples-box p:last-child{margin-bottom:0;}
+.examples-box b{color:var(--ink);}
+.translate-row{margin-top:14px;}
+.translate-btn{background:var(--surface-2);border:1px dashed var(--line);border-radius:999px;padding:8px 16px;font-size:13px;color:var(--ink-dim);}
+.translation-txt{font-size:19px;font-weight:600;color:var(--gold);margin-top:10px;font-family:'IBM Plex Sans Thai';}
+
+.big-btn{
+  width:100%;padding:15px;border-radius:14px;font-family:'Fredoka';font-weight:600;font-size:16px;
+  background:var(--a1);color:#0E1220;margin-top:20px;
+}
+.big-btn:active{transform:scale(.98);}
+.big-btn.secondary{background:var(--surface-2);color:var(--ink);border:1px solid var(--line);}
+.big-btn.ghost{background:transparent;color:var(--ink-dim);border:1px solid var(--line);}
+.big-btn[disabled]{opacity:.4;}
+
+.rate-row{display:flex;gap:8px;margin-top:20px;}
+.rate-btn{flex:1;padding:12px 4px;border-radius:12px;font-size:12.5px;font-weight:600;font-family:'IBM Plex Sans Thai';border:1px solid var(--line);}
+.rate-btn.again{background:var(--c1-dim);color:var(--c1);}
+.rate-btn.hard{background:var(--b2-dim);color:var(--b2);}
+.rate-btn.good{background:var(--a2-dim);color:var(--a2);}
+.rate-btn.easy{background:var(--a1-dim);color:var(--a1);}
+
+/* ---------- exercise ---------- */
+.q-prompt{font-family:'Fredoka';font-size:15px;color:var(--ink-dim);margin-bottom:10px;}
+.q-main{font-size:20px;font-weight:600;line-height:1.5;margin-bottom:22px;}
+.q-main .blank{display:inline-block;min-width:60px;border-bottom:2px solid var(--ink-dim);}
+.q-main .kw{font-family:'IBM Plex Mono';color:var(--a2);}
+.options{display:flex;flex-direction:column;gap:10px;}
+.opt{
+  padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);
+  font-family:'IBM Plex Mono';font-size:16px;text-align:left;
+}
+.opt:active{transform:scale(.99);}
+.opt.correct{border-color:var(--good);background:var(--a1-dim);color:var(--good);}
+.opt.wrong{border-color:var(--bad);background:var(--c1-dim);color:var(--bad);}
+.opt.dim{opacity:.5;}
+.type-input{
+  width:100%;padding:16px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);
+  color:var(--ink);font-family:'IBM Plex Mono';font-size:18px;text-align:center;margin-bottom:14px;
+}
+.type-input:focus{outline:none;border-color:var(--a2);}
+.type-input.correct{border-color:var(--good);color:var(--good);}
+.type-input.wrong{border-color:var(--bad);color:var(--bad);}
+.feedback-banner{
+  position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;padding:16px 18px 22px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;z-index:30;
+  animation:slideup .2s ease;
+}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.feedback-banner.correct{background:#0F2A1B;border-top:1px solid var(--good);}
+.feedback-banner.wrong{background:#2A0F17;border-top:1px solid var(--bad);}
+.feedback-txt b{display:block;font-family:'Fredoka';font-size:16px;}
+.feedback-banner.correct .feedback-txt b{color:var(--good);}
+.feedback-banner.wrong .feedback-txt b{color:var(--bad);}
+.feedback-txt span{font-size:12.5px;color:var(--ink-dim);}
+.feedback-next{padding:12px 22px;border-radius:12px;font-family:'Fredoka';font-weight:600;font-size:14px;}
+.feedback-banner.correct .feedback-next{background:var(--good);color:#0E1220;}
+.feedback-banner.wrong .feedback-next{background:var(--bad);color:#fff;}
+
+/* ---------- match game ---------- */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;}
+.match-tile{
+  padding:14px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);
+  font-family:'IBM Plex Mono';font-size:14px;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center;
+}
+.match-tile.sel{border-color:var(--a2);background:var(--a2-dim);}
+.match-tile.ok{border-color:var(--good);background:var(--a1-dim);color:var(--good);opacity:.5;}
+.match-tile.bad{border-color:var(--bad);background:var(--c1-dim);animation:shake .3s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* ---------- summary ---------- */
+.summary-wrap{text-align:center;padding-top:30px;}
+.summary-emoji{font-size:56px;margin-bottom:6px;}
+.summary-wrap h2{font-family:'Fredoka';font-size:24px;margin:0 0 6px;}
+.summary-wrap p{color:var(--ink-dim);font-size:14px;}
+.summary-stats{display:flex;gap:10px;margin:24px 0;}
+.sstat{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 8px;}
+.sstat b{display:block;font-family:'Fredoka';font-size:20px;}
+.sstat span{font-size:11px;color:var(--ink-dim);}
+.stars-big{font-size:30px;letter-spacing:6px;margin:10px 0 20px;}
+
+/* ---------- bottom nav ---------- */
+.bottom-nav{
+  position:sticky;bottom:0;display:flex;justify-content:space-around;
+  background:var(--bg-2);border-top:1px solid var(--line);padding:10px 4px 14px;z-index:20;
+}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--ink-dim);padding:4px 10px;border-radius:10px;transition:transform .15s ease,color .15s ease;}
+.nav-btn.active{color:var(--ink);}
+.nav-btn .ic{font-size:19px;}
+
+/* ---------- settings ---------- */
+.settings-row{
+  display:flex;align-items:center;justify-content:space-between;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;
+}
+.settings-row .lbl b{display:block;font-size:14px;font-family:'Fredoka';}
+.settings-row .lbl span{font-size:12px;color:var(--ink-dim);}
+.switch{width:44px;height:26px;border-radius:14px;background:var(--surface-3);position:relative;flex-shrink:0;}
+.switch.on{background:var(--a1);}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;}
+.switch.on::after{left:21px;}
+.seg{display:flex;background:var(--surface-2);border-radius:10px;padding:3px;}
+.seg button{flex:1;padding:7px 0;border-radius:8px;font-size:12px;font-weight:600;color:var(--ink-dim);}
+.seg button.active{background:var(--surface-3);color:var(--ink);}
+.danger-btn{color:var(--bad);border:1px solid var(--c1-dim);background:var(--c1-dim);border-radius:12px;padding:12px;width:100%;font-size:13px;font-weight:600;margin-top:6px;}
+
+/* ---------- stats page ---------- */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.stat-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;}
+.stat-card b{display:block;font-family:'Fredoka';font-size:24px;}
+.stat-card span{font-size:12px;color:var(--ink-dim);}
+.level-bar-row{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.level-bar-row .tag{width:28px;font-size:12px;font-weight:700;font-family:'Fredoka';}
+.level-bar-row .track{flex:1;height:10px;background:var(--surface-2);border-radius:6px;overflow:hidden;}
+.level-bar-row .track>div{height:100%;border-radius:6px;}
+.level-bar-row .n{font-size:11px;color:var(--ink-dim);width:88px;text-align:right;}
+
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--surface-3);border:1px solid var(--line);padding:10px 18px;border-radius:999px;font-size:13px;z-index:50;animation:fadein .2s ease;}
+.empty-state{text-align:center;padding:60px 20px;color:var(--ink-dim);}
+.empty-state .em{font-size:44px;margin-bottom:10px;}
+
+/* ---------- playful polish ---------- */
+.brand .mark{animation:bob 3s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-6deg)}}
+.stat-pill{transition:transform .15s ease;}
+.review-cta{transition:transform .15s ease, box-shadow .15s ease;}
+.review-cta:not(.empty):active{transform:scale(.985);}
+.chapter-card{transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;}
+.chapter-card:not(.locked):active{transform:scale(.98);}
+.level-tab{transition:transform .15s ease;}
+.stage-node{transition:transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s ease;}
+.stage-node.current{animation:pulseGlow 1.8s ease-in-out infinite;}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 5px rgba(255,255,255,.05)}50%{box-shadow:0 0 0 9px rgba(255,255,255,.09)}}
+.stage-node:not(.locked):active{transform:scale(.92);}
+.path{position:relative;}
+.path::before{
+  content:'';position:absolute;left:50%;top:36px;bottom:36px;width:3px;
+  background:repeating-linear-gradient(180deg, var(--surface-3) 0 8px, transparent 8px 16px);
+  transform:translateX(-50%);z-index:-1;
+}
+.opt{transition:transform .12s ease;}
+.opt:not(.dim):active{transform:scale(.98);}
+.big-btn{transition:transform .12s ease, box-shadow .12s ease;box-shadow:0 4px 0 rgba(0,0,0,.18);}
+.big-btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.18);}
+.big-btn.secondary,.big-btn.ghost{box-shadow:none;}
+.audio-btn{transition:transform .15s ease;}
+.audio-btn:active{transform:scale(.9) rotate(-8deg);}
+.summary-emoji{animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{0%{transform:scale(0) rotate(-15deg);opacity:0}70%{transform:scale(1.15) rotate(4deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+.confetti-piece{position:fixed;top:-20px;z-index:60;border-radius:2px;pointer-events:none;animation:confettiFall linear forwards;}
+@keyframes confettiFall{to{transform:translateY(110vh) rotate(540deg);opacity:.3}}
+
+@media (hover:hover){
+  .chapter-card:not(.locked):hover{transform:translateY(-2px);border-color:var(--line);box-shadow:0 8px 20px rgba(0,0,0,.25);}
+  .stage-node:not(.locked):hover{transform:scale(1.08);}
+  .opt:not(.dim):hover{border-color:var(--a2);}
+  .big-btn:hover{filter:brightness(1.06);}
+  .level-tab:not(.locked):hover{transform:translateY(-2px);}
+  .nav-btn:hover{color:var(--ink);}
+}
+
+/* ---------- responsive: tablet / desktop ---------- */
+@media (min-width:760px){
+  body.has-nav #shell{padding-left:230px;}
+  .bottom-nav{
+    position:fixed;left:0;top:0;bottom:0;width:230px;
+    flex-direction:column;justify-content:flex-start;align-items:stretch;gap:6px;
+    padding:26px 14px;border-top:none;border-right:1px solid var(--line);
+    background:var(--bg-2);z-index:25;
+  }
+  .bottom-nav::before{
+    content:'🥾 Trailhead';font-family:'Fredoka';font-weight:600;font-size:17px;
+    padding:6px 14px 22px;display:block;
+  }
+  .nav-btn{flex-direction:row;justify-content:flex-start;gap:12px;padding:12px 14px;font-size:14px;border-radius:12px;}
+  .nav-btn.active{background:var(--surface);}
+  .nav-btn .ic{font-size:19px;}
+  #app{max-width:640px;padding-top:6px;}
+  .topbar{max-width:640px;}
+  .screen{padding-left:24px;padding-right:24px;}
+  .stat-grid{grid-template-columns:repeat(4,1fr);}
+  .chapters{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .summary-stats{max-width:460px;margin-left:auto;margin-right:auto;}
+  .word-card{padding:34px 36px;}
+}
+@media (min-width:1080px){
+  #app{max-width:760px;}
+  .topbar{max-width:760px;}
+}
+</style>
+</head>
+<body>
+<div class="bg-blob b1"></div>
+<div class="bg-blob b2"></div>
+<div class="bg-blob b3"></div>
+<div id="shell"><div id="app"></div></div>
+
+<script>
+/* =========================================================
+   TRAILHEAD — Oxford 5000 vocabulary trainer
+   Single-file static app. Reads ./data.json (same folder).
+========================================================= */
+
+const LEVELS = ['A1','A2','B1','B2','C1'];
+const LEVEL_META = {
+  A1:{color:'var(--a1)',dim:'var(--a1-dim)',name:'เริ่มต้น',var:'--a1'},
+  A2:{color:'var(--a2)',dim:'var(--a2-dim)',name:'พื้นฐาน',var:'--a2'},
+  B1:{color:'var(--b1)',dim:'var(--b1-dim)',name:'กลาง',var:'--b1'},
+  B2:{color:'var(--b2)',dim:'var(--b2-dim)',name:'กลาง-สูง',var:'--b2'},
+  C1:{color:'var(--c1)',dim:'var(--c1-dim)',name:'สูง',var:'--c1'},
+};
+const STAGE_SIZE = 10;
+const CHAPTER_SIZE = 10; // stages per chapter
+
+/* ---------------- state ---------------- */
+const DEFAULT_STATE = {
+  xp:0,
+  streak:{count:0,last:null},
+  stageProgress:{},         // "A1-3": {stars:3, best:0.9, done:true}
+  srs:{},                   // wordId: {ease,interval,reps,due}
+  translationCache:{},      // word: thai text
+  settings:{translation:true, accent:'uk', intensive:true},
+};
+let state = loadState();
+function loadState(){
+  try{
+    const raw = localStorage.getItem('trailhead_v1');
+    if(!raw) return structuredClone(DEFAULT_STATE);
+    const parsed = JSON.parse(raw);
+    const merged = Object.assign(structuredClone(DEFAULT_STATE), parsed);
+    merged.settings = Object.assign(structuredClone(DEFAULT_STATE.settings), parsed.settings||{});
+    return merged;
+  }catch(e){ return structuredClone(DEFAULT_STATE); }
+}
+function saveState(){ localStorage.setItem('trailhead_v1', JSON.stringify(state)); }
+
+/* ---------------- data ---------------- */
+let WORDS = [];            // full array
+let BY_LEVEL = {};         // level -> array of words
+let STAGES = {};           // level -> array of stage word-arrays
+let route = {screen:'loading'};
+
+async function boot(){
+  try{
+    const res = await fetch('data.json');
+    WORDS = await res.json();
+  }catch(e){
+    document.getElementById('app').innerHTML = `<div class="empty-state"><div class="em">📡</div><b>โหลด data.json ไม่สำเร็จ</b><p>ตรวจสอบว่าไฟล์ data.json อยู่โฟลเดอร์เดียวกับ index.html</p></div>`;
+    return;
+  }
+  for(const lv of LEVELS){
+    BY_LEVEL[lv] = WORDS.filter(w=>w.level===lv);
+    const chunks = [];
+    for(let i=0;i<BY_LEVEL[lv].length;i+=STAGE_SIZE) chunks.push(BY_LEVEL[lv].slice(i,i+STAGE_SIZE));
+    STAGES[lv] = chunks;
+  }
+  route = {screen:'home'};
+  render();
+}
+
+/* ---------------- helpers ---------------- */
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function sample(arr,n){ return shuffle(arr).slice(0,n); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
+function addDays(dateStr,n){ const d=new Date(dateStr); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function esc(s){ return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),1800);
+}
+function confettiBurst(){
+  const colors = ['#4ADE80','#38BDF8','#A78BFA','#FB923C','#F43F5E','#FBBF24'];
+  const n = 34;
+  for(let i=0;i<n;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    const size = 6 + Math.random()*6;
+    p.style.width = size+'px';
+    p.style.height = (size*0.4+4)+'px';
+    p.style.left = (Math.random()*100)+'vw';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration = (1.8+Math.random()*1.4)+'s';
+    p.style.animationDelay = (Math.random()*0.4)+'s';
+    p.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 3600);
+  }
+}
+
+function stageId(level,idx){ return level+'-'+idx; }
+function getStageProgress(id){ return state.stageProgress[id] || {stars:0,best:0,done:false}; }
+
+function isLevelUnlocked(level){
+  const i = LEVELS.indexOf(level);
+  if(i===0) return true;
+  const prev = LEVELS[i-1];
+  const total = STAGES[prev].length;
+  const done = STAGES[prev].filter((_,idx)=>getStageProgress(stageId(prev,idx)).done).length;
+  return total>0 && (done/total) >= 0.3;
+}
+function isStageUnlocked(level,idx){
+  if(idx===0) return isLevelUnlocked(level);
+  return getStageProgress(stageId(level,idx-1)).done;
+}
+function levelCompletion(level){
+  const total = STAGES[level].length;
+  const done = STAGES[level].filter((_,idx)=>getStageProgress(stageId(level,idx)).done).length;
+  return {done,total,pct: total? done/total:0};
+}
+function levelWordCompletion(level){
+  const total = BY_LEVEL[level].length;
+  let done = 0;
+  STAGES[level].forEach((words,idx)=>{ if(getStageProgress(stageId(level,idx)).done) done += words.length; });
+  return {done,total,pct: total? done/total:0};
+}
+
+/* ---------------- SRS (simplified SM-2) ---------------- */
+function srsUpdate(wordId, rating){
+  const today = todayStr();
+  let e = state.srs[wordId] || {ease:2.5, interval:0, reps:0, due:today};
+  e = Object.assign({}, e);
+  if(rating==='again'){
+    e.reps = 0;
+    e.ease = Math.max(1.3, e.ease-0.2);
+    e.interval = 0; // due again today/next session
+  } else {
+    e.reps += 1;
+    if(e.reps===1) e.interval = 1;
+    else if(e.reps===2) e.interval = 3;
+    else e.interval = Math.round(e.interval * e.ease);
+    if(rating==='hard'){ e.ease=Math.max(1.3,e.ease-0.15); e.interval=Math.max(1,Math.round(e.interval*0.8)); }
+    if(rating==='easy'){ e.ease += 0.15; e.interval=Math.round(e.interval*1.3)+1; }
+  }
+  e.due = addDays(today, Math.max(e.interval,1));
+  if(rating==='again') e.due = today;
+  state.srs[wordId] = e;
+  saveState();
+}
+function dueWords(){
+  const today = todayStr();
+  const ids = Object.keys(state.srs).filter(id=> state.srs[id].due <= today);
+  return ids.map(id=>WORDS[+id]).filter(Boolean);
+}
+
+/* ---------------- streak / xp ---------------- */
+function touchStreak(){
+  const today = todayStr();
+  if(state.streak.last === today) return;
+  if(state.streak.last && daysBetween(state.streak.last, today)===1){
+    state.streak.count += 1;
+  } else {
+    state.streak.count = 1;
+  }
+  state.streak.last = today;
+  saveState();
+}
+function addXP(n){ state.xp += n; saveState(); }
+
+/* ---------------- translation ---------------- */
+async function getThaiTranslation(word, sourceText){
+  const cacheKey = word;
+  if(state.translationCache[cacheKey] !== undefined) return state.translationCache[cacheKey];
+  const q = sourceText || word;
+  try{
+    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=en|th`);
+    const data = await res.json();
+    let text = (data && data.responseData && data.responseData.translatedText) || '';
+    if(/MYMEMORY WARNING/i.test(text)) text = '';
+    state.translationCache[cacheKey] = text;
+    saveState();
+    return text;
+  }catch(e){ return ''; }
+}
+
+/* ---------------- audio ---------------- */
+let audioEl = new Audio();
+function playAudio(word){
+  const src = state.settings.accent==='uk' ? word.mp3_uk : word.mp3_us;
+  if(!src) return;
+  audioEl.pause();
+  audioEl = new Audio(src);
+  audioEl.play().catch(()=>toast('เล่นเสียงไม่สำเร็จ ลองใหม่อีกครั้ง'));
+}
+
+/* =========================================================
+   RENDER — tiny hash-free SPA
+========================================================= */
+const app = document.getElementById('app');
+function go(r){ route = r; window.scrollTo(0,0); render(); }
+
+function render(){
+  document.body.classList.toggle('has-nav', route.screen!=='lesson' && route.screen!=='loading');
+  if(route.screen==='loading'){ app.innerHTML = `<div class="empty-state"><div class="em">🥾</div><b>กำลังโหลดคำศัพท์...</b></div>`; return; }
+  if(route.screen==='home') return renderHome();
+  if(route.screen==='levelmap') return renderLevelMap();
+  if(route.screen==='stagepath') return renderStagePath();
+  if(route.screen==='lesson') return renderLesson();
+  if(route.screen==='review') return renderReview();
+  if(route.screen==='stats') return renderStats();
+  if(route.screen==='settings') return renderSettings();
+}
+
+function topbar(activeNav){
+  return `
+  <div class="topbar">
+    <div class="brand"><div class="mark">🥾</div>Trailhead</div>
+    <div class="topbar-right">
+      <div class="stat-pill streak">🔥 ${state.streak.count}</div>
+      <div class="stat-pill gold">⭐ ${state.xp}</div>
+    </div>
+  </div>`;
+}
+function bottomNav(active){
+  const items = [
+    {id:'home',ic:'🏠',lb:'หน้าหลัก'},
+    {id:'review',ic:'🔁',lb:'ทบทวน'},
+    {id:'stats',ic:'📊',lb:'สถิติ'},
+    {id:'settings',ic:'⚙️',lb:'ตั้งค่า'},
+  ];
+  return `<div class="bottom-nav">${items.map(it=>`
+    <button class="nav-btn ${active===it.id?'active':''}" onclick="go({screen:'${it.id==='home'?'home':it.id}'})">
+      <span class="ic">${it.ic}</span>${it.lb}
+    </button>`).join('')}</div>`;
+}
+
+/* ---------- HOME ---------- */
+let currentLevelTab = 'A1';
+function renderHome(){
+  const due = dueWords();
+  const meta = LEVEL_META[currentLevelTab];
+  const comp = levelCompletion(currentLevelTab);
+  app.innerHTML = `
+    ${topbar()}
+    <div class="screen">
+      <div class="hero">
+        <h1>สวัสดี 👋</h1>
+        <p>ท่องศัพท์ Oxford 5000 แบบเป็นด่าน เริ่มจากคำที่ใช้บ่อยที่สุดก่อน</p>
+      </div>
+
+      <div class="review-cta ${due.length? '':'empty'}" ${due.length?`onclick="go({screen:'review'})"`:''}>
+        <div class="icon">${due.length? '🧠':'✅'}</div>
+        <div class="txt">
+          <b>${due.length? `มีคำให้ทบทวน ${due.length} คำ` : 'ยังไม่มีคำที่ต้องทบทวนวันนี้'}</b>
+          <span>${due.length? 'ทบทวนตอนนี้เพื่อจำได้แม่นขึ้น' : 'เรียนคำใหม่เพื่อเริ่มระบบทบทวน'}</span>
+        </div>
+        ${due.length? `<div class="go">เริ่ม</div>`:''}
+      </div>
+
+      <div class="level-tabs">
+        ${LEVELS.map(lv=>{
+          const unlocked = isLevelUnlocked(lv);
+          const active = lv===currentLevelTab;
+          const m = LEVEL_META[lv];
+          return `<button class="level-tab ${active?'active':''} ${unlocked?'':'locked'}"
+            style="${active?`background:${m.color};border-color:${m.color}`:''}"
+            onclick="${unlocked? `selectLevelTab('${lv}')` : `toast('เรียน ${lv==='A2'?'A1':lv==='B1'?'A2':lv==='B2'?'B1':'B2'} ให้ถึง 30% ก่อนนะ')`}">
+            ${lv}<small>${m.name}</small>
+          </button>`;
+        }).join('')}
+      </div>
+
+      <div class="level-progress-label"><span>ความคืบหน้า ${currentLevelTab}</span><span>${comp.done}/${comp.total} ด่าน</span></div>
+      <div class="level-progress-bar"><div style="width:${comp.pct*100}%;background:${meta.color}"></div></div>
+
+      <div class="chapters">
+        ${chapterList(currentLevelTab)}
+      </div>
+    </div>
+    ${bottomNav('home')}
+  `;
+}
+function selectLevelTab(lv){ currentLevelTab = lv; renderHome(); }
+
+function chapterList(level){
+  const stages = STAGES[level];
+  const chapters = [];
+  for(let i=0;i<stages.length;i+=CHAPTER_SIZE) chapters.push(stages.slice(i,i+CHAPTER_SIZE));
+  const meta = LEVEL_META[level];
+  return chapters.map((chap,ci)=>{
+    const startIdx = ci*CHAPTER_SIZE;
+    const doneCount = chap.filter((_,j)=>getStageProgress(stageId(level,startIdx+j)).done).length;
+    const locked = !isStageUnlocked(level, startIdx);
+    const wordFrom = startIdx*STAGE_SIZE+1, wordTo = Math.min((startIdx+chap.length)*STAGE_SIZE, BY_LEVEL[level].length);
+    return `<div class="chapter-card ${locked?'locked':''}" onclick="${locked? `toast('ปลดล็อกด่านก่อนหน้าก่อนนะ')`:`go({screen:'stagepath',level:'${level}',chapter:${ci}})`}">
+      <div class="badge" style="background:${meta.dim};color:${meta.color}">${ci+1}</div>
+      <div class="info"><b>บทที่ ${ci+1}</b><span>คำที่ ${wordFrom}–${wordTo} · ${doneCount}/${chap.length} ด่าน</span></div>
+      <div class="arrow">${locked?'🔒':'›'}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- LEVEL MAP (unused entry, kept for back-compat) ---------- */
+function renderLevelMap(){ go({screen:'home'}); }
+
+/* ---------- STAGE PATH ---------- */
+function renderStagePath(){
+  const {level, chapter} = route;
+  const meta = LEVEL_META[level];
+  const stages = STAGES[level];
+  const startIdx = chapter*CHAPTER_SIZE;
+  const chapStages = stages.slice(startIdx, startIdx+CHAPTER_SIZE);
+  app.innerHTML = `
+    ${topbar()}
+    <div class="screen">
+      <div class="back-row">
+        <button class="back-btn" onclick="go({screen:'home'})">‹</button>
+        <b>${level} · บทที่ ${chapter+1}</b>
+      </div>
+      <div class="path">
+        ${chapStages.map((words,j)=>{
+          const idx = startIdx+j;
+          const id = stageId(level,idx);
+          const prog = getStageProgress(id);
+          const locked = !isStageUnlocked(level,idx);
+          const isNextUp = !locked && !prog.done;
+          let cls = 'stage-node';
+          if(prog.done) cls+=' done';
+          if(locked) cls+=' locked';
+          if(isNextUp) cls+=' current';
+          const bg = prog.done ? meta.color : (locked? 'var(--surface)': 'var(--surface-2)');
+          return `<button class="${cls}" style="background:${bg};border-color:${prog.done||isNextUp?meta.color:'var(--line)'}"
+            onclick="${locked? `toast('ทำด่านก่อนหน้าให้จบก่อนนะ')` : `startStage('${level}',${idx})`}">
+            ${prog.done? `<span class="check">✓</span>` : (locked? '🔒' : idx+1)}
+            ${prog.done? `<span class="stars" style="color:${meta.color}">${'★'.repeat(prog.stars)}${'☆'.repeat(3-prog.stars)}</span>`:''}
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+    ${bottomNav('home')}
+  `;
+}
+
+/* =========================================================
+   LESSON ENGINE
+========================================================= */
+let lesson = null;
+function startStage(level, idx){
+  const words = STAGES[level][idx];
+  const review = sample(dueWords().filter(w=>w.level!==undefined), 5);
+  lesson = {
+    level, idx,
+    phase:'learn',          // learn -> practice -> match -> summary
+    learnQueue: words.slice(),
+    learnPos:0,
+    practiceQueue: buildPracticeQueue(words, review),
+    practicePos:0,
+    correct:0,
+    total:0,
+    matchWords: sample(words, Math.min(6,words.length)),
+  };
+  go({screen:'lesson'});
+}
+function startReviewSession(){
+  const words = sample(dueWords(), Math.min(dueWords().length, 12));
+  if(words.length===0){ toast('ไม่มีคำให้ทบทวนตอนนี้'); return; }
+  lesson = {
+    level:null, idx:null, isReview:true,
+    phase:'practice',
+    learnQueue:[], learnPos:0,
+    practiceQueue: words.map(w=>({type:'flash', word:w})),
+    practicePos:0, correct:0, total:0, matchWords:[],
+  };
+  go({screen:'lesson'});
+}
+function buildPracticeQueue(newWords, reviewWords){
+  const types = ['listen','meaning','cloze','type'];
+  const q = newWords.map((w,i)=>({type: (w.definition? types[i%types.length] : ['listen','cloze','type'][i%3]), word:w}));
+  reviewWords.forEach(w=> q.push({type:'flash', word:w}));
+  return shuffle(q);
+}
+
+function renderLesson(){
+  if(!lesson) return go({screen:'home'});
+  if(lesson.phase==='learn') return renderLearnCard();
+  if(lesson.phase==='practice') return renderExercise();
+  if(lesson.phase==='match') return renderMatchGame();
+  if(lesson.phase==='summary') return renderSummary();
+}
+
+/* ---- LEARN CARD ---- */
+function renderLearnCard(){
+  if(lesson.learnSubPhase==='write') return renderLearnWrite();
+  const w = lesson.learnQueue[lesson.learnPos];
+  const meta = LEVEL_META[w.level];
+  const pct = (lesson.learnPos/lesson.learnQueue.length)*50;
+  app.innerHTML = `
+    <div class="screen" style="padding-top:14px">
+      <div class="lesson-header">
+        <button class="close-x" onclick="exitLesson()">×</button>
+        <div class="progress-track"><div style="width:${pct}%"></div></div>
+      </div>
+      <div class="word-card">
+        <span class="type-badge" style="background:${meta.dim};color:${meta.color}">${w.type} · ${w.level}</span>
+        <div class="word-main">${esc(w.word)}</div>
+        <div class="phon">${esc(w.phon_uk||w.phon_us||'')}</div>
+        <div class="audio-row">
+          <button class="audio-btn" onclick="playAudio(WORDS[${w.id}])">🔊</button>
+        </div>
+        ${w.definition ? `<div class="definition-box">${esc(w.definition)}</div>` : ''}
+        <div class="examples-box">
+          ${(w.examples||[]).slice(0,2).map(ex=>`<p>${highlightWord(ex,w.word)}</p>`).join('') || '<p>—</p>'}
+        </div>
+        <div class="translate-row" id="translate-zone">
+          ${state.settings.translation ? `<button class="translate-btn" onclick="revealTranslation(${w.id})">🇹🇭 ดูคำแปลไทย</button>` : ''}
+        </div>
+      </div>
+      <button class="big-btn" onclick="proceedFromCard()">รู้จักคำนี้แล้ว ต่อไป →</button>
+    </div>
+  `;
+}
+function highlightWord(sentence, word){
+  const re = new RegExp('('+word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','i');
+  return esc(sentence).replace(new RegExp(esc(word),'i'), m=>`<b>${m}</b>`);
+}
+async function revealTranslation(id){
+  const w = WORDS[id];
+  const zone = document.getElementById('translate-zone');
+  zone.innerHTML = `<span style="color:var(--ink-dim);font-size:13px">กำลังแปล...</span>`;
+  const th = await getThaiTranslation(w.word, w.definition||w.word);
+  zone.innerHTML = th ? `<div class="translation-txt">${esc(th)}</div>` : `<span style="color:var(--ink-dim);font-size:12.5px">แปลไม่สำเร็จ ลองใหม่ภายหลัง</span>`;
+}
+function proceedFromCard(){
+  const w = lesson.learnQueue[lesson.learnPos];
+  srsUpdate(w.id, 'good');
+  if(state.settings.intensive){
+    lesson.learnSubPhase = 'write';
+    lesson.writeAttempts = 0;
+    lesson.writeMsg = '';
+    go({screen:'lesson'});
+  } else {
+    advanceLearn();
+  }
+}
+function advanceLearn(){
+  lesson.learnPos++;
+  lesson.learnSubPhase = 'card';
+  lesson.writeMsg = '';
+  if(lesson.learnPos >= lesson.learnQueue.length){
+    lesson.phase='practice';
+  }
+  go({screen:'lesson'});
+}
+
+/* ---- MANDATORY SENTENCE WRITING (intensive mode) ---- */
+function renderLearnWrite(){
+  const w = lesson.learnQueue[lesson.learnPos];
+  const meta = LEVEL_META[w.level];
+  const pct = 50*((lesson.learnPos+0.5)/lesson.learnQueue.length);
+  const attempts = lesson.writeAttempts||0;
+  app.innerHTML = `
+    <div class="screen" style="padding-top:14px">
+      <div class="lesson-header">
+        <button class="close-x" onclick="exitLesson()">×</button>
+        <div class="progress-track"><div style="width:${pct}%"></div></div>
+      </div>
+      <div class="q-prompt">✍️ แต่งประโยคของคุณเองโดยใช้คำนี้</div>
+      <div class="word-card" style="padding:20px;margin-bottom:16px">
+        <span class="type-badge" style="background:${meta.dim};color:${meta.color}">${w.type}</span>
+        <div class="word-main" style="font-size:28px">${esc(w.word)}</div>
+        <div class="phon">${esc(w.phon_uk||w.phon_us||'')}</div>
+      </div>
+      <textarea id="write-input" class="type-input" style="text-align:left;min-height:90px;font-family:'IBM Plex Sans Thai';font-size:15px" placeholder="พิมพ์ประโยคภาษาอังกฤษที่ใช้คำว่า &quot;${esc(w.word)}&quot;..."></textarea>
+      <div id="write-msg" style="min-height:20px;font-size:12.5px;color:var(--bad);margin:6px 2px 0">${esc(lesson.writeMsg||'')}</div>
+      <button class="big-btn" onclick="checkWrite(${w.id})">ตรวจประโยค</button>
+      ${attempts>=2? `<button class="big-btn ghost" style="margin-top:10px" onclick="advanceLearn()">ข้ามข้อนี้ไปก่อน</button>`:''}
+    </div>
+  `;
+}
+function checkWrite(wordId){
+  const w = WORDS[wordId];
+  const input = document.getElementById('write-input');
+  const sentence = input.value.trim();
+  lesson.writeAttempts = (lesson.writeAttempts||0) + 1;
+
+  const tokens = sentence.toLowerCase().replace(/[^a-z\s'-]/g,' ').split(/\s+/).filter(Boolean);
+  const base = w.word.toLowerCase();
+  let found = tokens.some(t=> t===base || (base.length>=2 && t.startsWith(base)) );
+  const longEnough = tokens.length >= 3;
+
+  if(found && longEnough){
+    addXP(2);
+    advanceLearn();
+  } else if(!sentence){
+    lesson.writeMsg = 'ลองแต่งประโยคสักหน่อยนะ';
+    go({screen:'lesson'});
+  } else if(!longEnough){
+    lesson.writeMsg = 'ลองแต่งเป็นประโยคที่สมบูรณ์กว่านี้อีกนิดนะ';
+    go({screen:'lesson'});
+  } else {
+    lesson.writeMsg = 'ลองอีกครั้งนะ ยังไม่ค่อยเข้าเป้าเท่าไหร่';
+    go({screen:'lesson'});
+  }
+}
+
+/* ---- EXERCISE ---- */
+let exState = {answered:false};
+function renderExercise(){
+  exState = {answered:false};
+  const item = lesson.practiceQueue[lesson.practicePos];
+  if(!item){ lesson.phase = (lesson.matchWords.length>=4 && !lesson.isReview) ? 'match':'summary'; return go({screen:'lesson'}); }
+  const total = lesson.practiceQueue.length + (lesson.learnQueue.length||0);
+  const donePos = (lesson.learnQueue.length||0) + lesson.practicePos;
+  const pct = 50 + (lesson.practicePos/lesson.practiceQueue.length)*50;
+  const pctFinal = lesson.isReview ? (lesson.practicePos/lesson.practiceQueue.length)*100 : pct;
+
+  let body = '';
+  if(item.type==='listen') body = exerciseListen(item.word);
+  else if(item.type==='cloze') body = exerciseCloze(item.word);
+  else if(item.type==='type') body = exerciseType(item.word);
+  else if(item.type==='meaning') body = exerciseMeaning(item.word);
+  else if(item.type==='flash') body = exerciseFlash(item.word);
+
+  app.innerHTML = `
+    <div class="screen" style="padding-top:14px">
+      <div class="lesson-header">
+        <button class="close-x" onclick="exitLesson()">×</button>
+        <div class="progress-track"><div style="width:${pctFinal}%"></div></div>
+      </div>
+      ${body}
+    </div>
+  `;
+}
+
+function exerciseListen(word){
+  const pool = BY_LEVEL[word.level].map(w=>w.word).filter(x=>x!==word.word);
+  const opts = shuffle([word.word, ...sample(pool,3)]);
+  setTimeout(()=>playAudio(word), 200);
+  return `
+    <div class="q-prompt">🎧 ฟังเสียง แล้วเลือกคำที่ถูกต้อง</div>
+    <div class="audio-row" style="margin-bottom:22px"><button class="audio-btn" onclick="playAudio(WORDS[${word.id}])">🔊</button></div>
+    <div class="options">
+      ${opts.map(o=>`<button class="opt" onclick="answerMCQ(this,'${escJs(o)}','${escJs(word.word)}',${word.id})">${esc(o)}</button>`).join('')}
+    </div>
+  `;
+}
+function exerciseCloze(word){
+  const ex = (word.examples && word.examples.length) ? word.examples[0] : null;
+  if(!ex) return exerciseType(word);
+  const re = new RegExp(word.word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i');
+  const blanked = esc(ex).replace(new RegExp(esc(word.word),'i'), '<span class="blank">_____</span>');
+  const pool = BY_LEVEL[word.level].map(w=>w.word).filter(x=>x!==word.word);
+  const opts = shuffle([word.word, ...sample(pool,3)]);
+  return `
+    <div class="q-prompt">✏️ เติมคำในช่องว่างให้ถูกต้อง</div>
+    <div class="q-main">${blanked}</div>
+    <div class="options">
+      ${opts.map(o=>`<button class="opt" onclick="answerMCQ(this,'${escJs(o)}','${escJs(word.word)}',${word.id})">${esc(o)}</button>`).join('')}
+    </div>
+  `;
+}
+function truncateDef(d, n){ d=d||''; return d.length>n ? d.slice(0,n-1).trim()+'…' : d; }
+function exerciseMeaning(word){
+  const pool = BY_LEVEL[word.level].filter(w=>w.definition && w.word!==word.word);
+  const distractors = sample(pool,3).map(w=>truncateDef(w.definition,90));
+  const correct = truncateDef(word.definition,90);
+  const opts = shuffle([correct, ...distractors]);
+  return `
+    <div class="q-prompt">💡 คำนี้แปลว่าอะไร?</div>
+    <div class="word-card" style="padding:20px;margin-bottom:18px">
+      <span class="type-badge" style="background:${LEVEL_META[word.level].dim};color:${LEVEL_META[word.level].color}">${word.type}</span>
+      <div class="word-main" style="font-size:28px">${esc(word.word)}</div>
+      <div class="phon">${esc(word.phon_uk||word.phon_us||'')}</div>
+    </div>
+    <div class="options">
+      ${opts.map(o=>`<button class="opt" style="font-family:'IBM Plex Sans Thai';font-size:14px" onclick="answerMCQ(this,'${escJs(o)}','${escJs(correct)}',${word.id})">${esc(o)}</button>`).join('')}
+    </div>
+  `;
+}
+function exerciseType(word){
+  setTimeout(()=>playAudio(word), 200);
+  return `
+    <div class="q-prompt">⌨️ ฟังเสียงแล้วพิมพ์คำศัพท์</div>
+    <div class="audio-row" style="margin-bottom:20px"><button class="audio-btn" onclick="playAudio(WORDS[${word.id}])">🔊</button></div>
+    <div class="phon" style="text-align:center;margin-bottom:16px">${esc(word.phon_uk||word.phon_us||'')}</div>
+    <input id="type-input" class="type-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="พิมพ์คำที่นี่...">
+    <button class="big-btn" onclick="answerType(${word.id})">ตรวจคำตอบ</button>
+  `;
+}
+function exerciseFlash(word){
+  const meta = LEVEL_META[word.level];
+  return `
+    <div class="q-prompt">🔁 ทบทวน — นึกความหมายในใจก่อนเปิดดู</div>
+    <div class="word-card">
+      <span class="type-badge" style="background:${meta.dim};color:${meta.color}">${word.type} · ${word.level}</span>
+      <div class="word-main">${esc(word.word)}</div>
+      <div class="phon">${esc(word.phon_uk||word.phon_us||'')}</div>
+      <div class="audio-row"><button class="audio-btn" onclick="playAudio(WORDS[${word.id}])">🔊</button></div>
+      <div id="flash-reveal"></div>
+    </div>
+    <button class="big-btn" id="flash-showbtn" onclick="revealFlash(${word.id})">แสดงความหมาย</button>
+    <div id="flash-rate" style="display:none">
+      <div class="rate-row">
+        <button class="rate-btn again" onclick="answerFlash(${word.id},'again')">ลืมแล้ว</button>
+        <button class="rate-btn hard" onclick="answerFlash(${word.id},'hard')">ยาก</button>
+        <button class="rate-btn good" onclick="answerFlash(${word.id},'good')">จำได้</button>
+        <button class="rate-btn easy" onclick="answerFlash(${word.id},'easy')">ง่ายมาก</button>
+      </div>
+    </div>
+  `;
+}
+async function revealFlash(id){
+  const w = WORDS[id];
+  document.getElementById('flash-showbtn').style.display='none';
+  document.getElementById('flash-rate').style.display='block';
+  const zone = document.getElementById('flash-reveal');
+  let html = '';
+  if(w.definition) html += `<div class="definition-box">${esc(w.definition)}</div>`;
+  html += `<div class="examples-box">${(w.examples||[]).slice(0,2).map(ex=>`<p>${highlightWord(ex,w.word)}</p>`).join('')||'<p>—</p>'}</div>`;
+  zone.innerHTML = html;
+  if(state.settings.translation){
+    zone.innerHTML += `<div class="translation-txt" id="ftr">กำลังแปล...</div>`;
+    const th = await getThaiTranslation(w.word, w.definition||w.word);
+    const el = document.getElementById('ftr');
+    if(el) el.textContent = th || '(แปลไม่สำเร็จ)';
+  }
+}
+function answerFlash(id, rating){
+  srsUpdate(id, rating);
+  lesson.total++;
+  if(rating!=='again') lesson.correct++;
+  advancePractice();
+}
+
+function escJs(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+function answerMCQ(el, chosen, correct, wordId){
+  if(exState.answered) return;
+  exState.answered = true;
+  const ok = chosen===correct;
+  document.querySelectorAll('.opt').forEach(o=>{
+    o.classList.add('dim');
+    if(o.textContent.trim()===correct) o.classList.add('correct');
+  });
+  if(!ok) el.classList.add('wrong');
+  el.classList.remove('dim');
+  lesson.total++; if(ok) lesson.correct++;
+  srsUpdate(wordId, ok?'good':'again');
+  requeueIfWrong(ok, wordId);
+  showFeedback(ok, correct);
+}
+function answerType(wordId){
+  if(exState.answered) return;
+  const input = document.getElementById('type-input');
+  const val = input.value.trim();
+  const w = WORDS[wordId];
+  const ok = val.toLowerCase()===w.word.toLowerCase();
+  exState.answered = true;
+  input.classList.add(ok?'correct':'wrong');
+  input.disabled = true;
+  lesson.total++; if(ok) lesson.correct++;
+  srsUpdate(wordId, ok?'good':'again');
+  requeueIfWrong(ok, wordId);
+  showFeedback(ok, w.word);
+}
+function requeueIfWrong(ok, wordId){
+  if(ok || !state.settings.intensive || lesson.isReview) return;
+  lesson.retryIds = lesson.retryIds || new Set();
+  if(lesson.retryIds.has(wordId)) return; // avoid infinite stacking
+  lesson.retryIds.add(wordId);
+  lesson.practiceQueue.push({type:'type', word: WORDS[wordId]});
+}
+function showFeedback(ok, correctText){
+  const banner = document.createElement('div');
+  banner.className = 'feedback-banner ' + (ok?'correct':'wrong');
+  banner.innerHTML = `
+    <div class="feedback-txt"><b>${ok? 'ถูกต้อง! 🎉':'ยังไม่ถูก'}</b><span>${ok? 'เก่งมาก ไปต่อกันเลย':'คำตอบคือ: '+esc(correctText)}</span></div>
+    <button class="feedback-next" onclick="advancePracticeUI()">ต่อไป</button>
+  `;
+  document.body.appendChild(banner);
+}
+function advancePracticeUI(){
+  document.querySelectorAll('.feedback-banner').forEach(b=>b.remove());
+  advancePractice();
+}
+function advancePractice(){
+  lesson.practicePos++;
+  render();
+}
+
+/* ---- MATCH MINI GAME ---- */
+let matchState = null;
+function renderMatchGame(){
+  const words = lesson.matchWords;
+  const left = words.map(w=>({id:w.id,label:w.word,key:w.id}));
+  const right = shuffle(words.map(w=>({id:w.id,label:w.phon_uk||w.phon_us||w.word,key:w.id})));
+  matchState = {left, right, selLeft:null, selRight:null, solved:new Set()};
+  app.innerHTML = `
+    <div class="screen" style="padding-top:14px">
+      <div class="lesson-header"><button class="close-x" onclick="exitLesson()">×</button><div class="progress-track"><div style="width:92%"></div></div></div>
+      <div class="q-prompt">🎯 ด่านโบนัส: จับคู่คำศัพท์กับคำอ่านให้ถูกต้อง</div>
+      <div class="match-grid" id="match-left">
+        ${left.map((t,i)=>`<button class="match-tile" data-side="L" data-i="${i}" onclick="matchPick('L',${i})">${esc(t.label)}</button>`).join('')}
+      </div>
+      <div style="height:10px"></div>
+      <div class="match-grid" id="match-right">
+        ${right.map((t,i)=>`<button class="match-tile" data-side="R" data-i="${i}" onclick="matchPick('R',${i})">${esc(t.label)}</button>`).join('')}
+      </div>
+      ${state.settings.intensive ? '' : `<button class="big-btn ghost" style="margin-top:20px" onclick="skipMatch()">ข้ามด่านโบนัส</button>`}
+    </div>
+  `;
+}
+function matchPick(side,i){
+  const tile = document.querySelector(`.match-tile[data-side="${side}"][data-i="${i}"]`);
+  if(tile.classList.contains('ok')) return;
+  if(side==='L'){ 
+    document.querySelectorAll('[data-side="L"]').forEach(t=>t.classList.remove('sel'));
+    matchState.selLeft = i; tile.classList.add('sel');
+  } else {
+    document.querySelectorAll('[data-side="R"]').forEach(t=>t.classList.remove('sel'));
+    matchState.selRight = i; tile.classList.add('sel');
+  }
+  if(matchState.selLeft!==null && matchState.selRight!==null){
+    const l = matchState.left[matchState.selLeft], r = matchState.right[matchState.selRight];
+    const lt = document.querySelector(`[data-side="L"][data-i="${matchState.selLeft}"]`);
+    const rt = document.querySelector(`[data-side="R"][data-i="${matchState.selRight}"]`);
+    if(l.key===r.key){
+      lt.classList.add('ok'); rt.classList.add('ok');
+      lt.classList.remove('sel'); rt.classList.remove('sel');
+      matchState.solved.add(l.key);
+      if(matchState.solved.size===matchState.left.length){
+        addXP(5);
+        setTimeout(()=>{ lesson.phase='summary'; go({screen:'lesson'}); }, 500);
+      }
+    } else {
+      lt.classList.add('bad'); rt.classList.add('bad');
+      setTimeout(()=>{ lt.classList.remove('bad','sel'); rt.classList.remove('bad','sel'); },400);
+    }
+    matchState.selLeft=null; matchState.selRight=null;
+  }
+}
+function skipMatch(){ lesson.phase='summary'; go({screen:'lesson'}); }
+
+/* ---- SUMMARY ---- */
+const PASS_THRESHOLD = 0.7;
+function renderSummary(){
+  const acc = lesson.total ? lesson.correct/lesson.total : 1;
+  const stars = acc>=0.9?3:acc>=0.7?2:1;
+  const xpGain = 10 + lesson.learnQueue.length*3 + Math.round(acc*20);
+  const requiresPass = state.settings.intensive && !lesson.isReview;
+  const passed = !requiresPass || acc>=PASS_THRESHOLD;
+  if(!lesson._saved){
+    lesson._saved = true;
+    if(!lesson.isReview){
+      const id = stageId(lesson.level, lesson.idx);
+      const prev = getStageProgress(id);
+      state.stageProgress[id] = {stars: passed? Math.max(prev.stars,stars):prev.stars, best: Math.max(prev.best,acc), done: prev.done || passed};
+    }
+    addXP(xpGain);
+    touchStreak();
+    saveState();
+    if(passed && !lesson.isReview) setTimeout(confettiBurst, 150);
+  }
+  app.innerHTML = `
+    <div class="screen summary-wrap">
+      <div class="summary-emoji">${!passed? '💪' : stars===3?'🏆':stars===2?'🎉':'✅'}</div>
+      <h2>${lesson.isReview? 'ทบทวนเสร็จแล้ว!' : passed? 'ผ่านด่านแล้ว!' : 'ยังไม่ผ่านด่านนี้'}</h2>
+      <p>${lesson.isReview? 'ทบทวนสม่ำเสมอช่วยให้จำได้แม่นยิ่งขึ้น' : passed? 'เก่งมาก ไปต่อด่านถัดไปกันเลย' : `ต้องตอบถูกอย่างน้อย ${Math.round(PASS_THRESHOLD*100)}% ถึงจะผ่านด่านนี้ ลองอีกครั้งนะ`}</p>
+      ${(!lesson.isReview && passed)? `<div class="stars-big" style="color:var(--gold)">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div>`:''}
+      <div class="summary-stats">
+        <div class="sstat"><b>${lesson.correct}/${lesson.total}</b><span>ตอบถูก</span></div>
+        <div class="sstat"><b>+${xpGain}</b><span>XP</span></div>
+        <div class="sstat"><b>${Math.round(acc*100)}%</b><span>ความแม่นยำ</span></div>
+      </div>
+      ${passed? `
+        <button class="big-btn" onclick="go({screen:'home'})">กลับหน้าหลัก</button>
+      ` : `
+        <button class="big-btn" onclick="startStage('${lesson.level}',${lesson.idx})">ลองด่านนี้อีกครั้ง</button>
+        <button class="big-btn ghost" style="margin-top:10px" onclick="go({screen:'home'})">กลับหน้าหลักก่อน</button>
+      `}
+    </div>
+  `;
+}
+function exitLesson(){
+  if(confirm('ออกจากด่านนี้? ความคืบหน้าของด่านนี้จะไม่ถูกบันทึก')){
+    lesson = null; go({screen:'home'});
+  }
+}
+
+/* =========================================================
+   REVIEW HUB
+========================================================= */
+function renderReview(){
+  const due = dueWords();
+  const totalSrs = Object.keys(state.srs).length;
+  app.innerHTML = `
+    ${topbar()}
+    <div class="screen">
+      <div class="hero"><h1>ทบทวน 🔁</h1><p>ระบบจะเลือกคำที่ใกล้ลืมมาให้ทบทวนโดยอัตโนมัติ (Spaced Repetition)</p></div>
+      ${due.length? `
+        <div class="review-cta" onclick="startReviewSession()">
+          <div class="icon">🧠</div>
+          <div class="txt"><b>มีคำให้ทบทวน ${due.length} คำ</b><span>ใช้เวลาประมาณ ${Math.max(1,Math.round(due.length*0.3))} นาที</span></div>
+          <div class="go">เริ่ม</div>
+        </div>
+      ` : `
+        <div class="empty-state">
+          <div class="em">🌤️</div>
+          <b>ไม่มีคำที่ต้องทบทวนตอนนี้</b>
+          <p>เรียนคำใหม่เพิ่มเพื่อสร้างคิวทบทวน หรือกลับมาเช็คพรุ่งนี้</p>
+        </div>
+      `}
+      <div class="stat-grid">
+        <div class="stat-card"><b>${totalSrs}</b><span>คำที่กำลังฝึกอยู่ในระบบ</span></div>
+        <div class="stat-card"><b>${Object.values(state.srs).filter(e=>e.reps>=3).length}</b><span>คำที่จำได้แม่นแล้ว</span></div>
+      </div>
+    </div>
+    ${bottomNav('review')}
+  `;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+function renderStats(){
+  const totalWords = WORDS.length;
+  const learned = Object.keys(state.srs).length;
+  const mastered = Object.values(state.srs).filter(e=>e.reps>=3 && e.ease>=2.5).length;
+  app.innerHTML = `
+    ${topbar()}
+    <div class="screen">
+      <div class="hero"><h1>สถิติของคุณ 📊</h1><p>ความคืบหน้าในการเรียนศัพท์ Oxford 5000 ทั้งหมด</p></div>
+      <div class="stat-grid">
+        <div class="stat-card"><b>${learned}</b><span>คำที่เริ่มเรียนแล้ว</span></div>
+        <div class="stat-card"><b>${mastered}</b><span>คำที่จำได้แม่น</span></div>
+        <div class="stat-card"><b>${state.streak.count} วัน</b><span>สตรีคต่อเนื่อง</span></div>
+        <div class="stat-card"><b>${state.xp}</b><span>XP สะสม</span></div>
+      </div>
+      <div style="margin-top:22px">
+        <div class="level-progress-label"><span>ความคืบหน้าตามระดับ CEFR</span><span>${totalWords} คำทั้งหมด</span></div>
+        ${LEVELS.map(lv=>{
+          const comp = levelWordCompletion(lv);
+          const meta = LEVEL_META[lv];
+          return `<div class="level-bar-row">
+            <div class="tag" style="color:${meta.color}">${lv}</div>
+            <div class="track"><div style="width:${comp.pct*100}%;background:${meta.color}"></div></div>
+            <div class="n">${comp.done}/${comp.total} คำ</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    ${bottomNav('stats')}
+  `;
+}
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+function renderSettings(){
+  app.innerHTML = `
+    ${topbar()}
+    <div class="screen">
+      <div class="hero"><h1>ตั้งค่า ⚙️</h1></div>
+
+      <div class="settings-row">
+        <div class="lbl"><b>โหมดเข้มข้น</b><span>บังคับแต่งประโยคทุกคำใหม่ + ต้องผ่านเกณฑ์ความแม่นยำถึงจะปลดล็อกด่านถัดไป</span></div>
+        <button class="switch ${state.settings.intensive?'on':''}" onclick="toggleSetting('intensive')"></button>
+      </div>
+
+      <div class="settings-row">
+        <div class="lbl"><b>คำแปลภาษาไทย</b><span>ดึงคำแปลสดจากอินเทอร์เน็ตระหว่างเรียน</span></div>
+        <button class="switch ${state.settings.translation?'on':''}" onclick="toggleSetting('translation')"></button>
+      </div>
+
+      <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:10px">
+        <div class="lbl"><b>สำเนียงเสียงอ่าน</b><span>เลือกสำเนียงสำหรับฟังออกเสียง</span></div>
+        <div class="seg">
+          <button class="${state.settings.accent==='uk'?'active':''}" onclick="setAccent('uk')">🇬🇧 UK</button>
+          <button class="${state.settings.accent==='us'?'active':''}" onclick="setAccent('us')">🇺🇸 US</button>
+        </div>
+      </div>
+
+      <div style="margin-top:24px">
+        <button class="danger-btn" onclick="resetProgress()">ล้างความคืบหน้าทั้งหมด</button>
+      </div>
+
+      <p style="color:var(--ink-dim);font-size:12px;text-align:center;margin-top:30px;line-height:1.7">
+        Trailhead · สร้างจากฐานข้อมูล Oxford 5000<br>ข้อมูลทั้งหมดถูกบันทึกไว้ในเบราว์เซอร์ของคุณเท่านั้น
+      </p>
+    </div>
+    ${bottomNav('settings')}
+  `;
+}
+function toggleSetting(key){ state.settings[key] = !state.settings[key]; saveState(); renderSettings(); }
+function setAccent(a){ state.settings.accent = a; saveState(); renderSettings(); }
+function resetProgress(){
+  if(confirm('ต้องการล้างความคืบหน้าทั้งหมดใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้')){
+    state = structuredClone(DEFAULT_STATE);
+    saveState();
+    toast('ล้างข้อมูลเรียบร้อย');
+    go({screen:'home'});
+  }
+}
+
+/* ---------------- boot ---------------- */
+boot();
+</script>
+</body>
+</html>
